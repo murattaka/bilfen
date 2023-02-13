@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
+    <title>Bilfen</title>
+    <style>
+        .cursor-hand{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="p-4 bg-dark m-0">
+        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+          <img src="https://bilfen.com/assets/img/logo.png" alt="Bilfen" height="32" class="me-2">
+        </a>
+    </header>
+    <main class="vh-100 w-100 bg-secondary m-0 position-relative pt-5">
+        <div class="container">
+            <button type="button" class="btn btn-primary mb-3" id="add-new-data"><i class="fa-solid fa-plus"></i> Yeni Öğrenci Kaydı Ekle</button>
+            <div class="bg-light p-4 rounded-4">
+                <table id="bilfen" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tr Identity Number</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>School</th>
+                            <th>School Number</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tr Identity Number</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>School</th>
+                            <th>School Number</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table> 
+            </div>
+         
+        </div>
+    </main>
+    <footer class="p-4 bg-dark m-0">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="https://bilfen.com/assets/img/logo.png" alt="Bilfen" height="32" class="me-2">
+            </div>
+            <div class="text-end col-md-6">
+                <a href="https://www.facebook.com/bilfenegitimkurumlari" class="btn btn-link text-white rounded-circle" style="margin-left:0px !important;"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com/Bilfen" class="btn btn-link text-white rounded-circle "><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/bilfen/" class="btn btn-link text-white rounded-circle"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/user/bilfentv" class="btn btn-link text-white rounded-circle"><i class="fab fa-youtube"></i></a>
+                <a href="https://tr.pinterest.com/bilfen/" class="btn btn-link text-white rounded-circle"><i class="fab fa-pinterest-p"></i></a>                                                                
+            </div>
+        </div>
+    </footer>
+    <div class="modal" tabindex="-1" id="student-form-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal-title"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="student-form">
+                <div class="input-group mb-3">
+                    <input class="form-control" type="number" placeholder="TC Kimlik" name="trIdentityNumber" id="trIdentityNumber">
+                </div>
+                <div class="input-group mb-3">
+                    <input class="form-control" type="text" placeholder="İsim" name="name" id="name">
+                    <input class="form-control" type="text" placeholder="Soyisim" name="surname" id="surname">
+                </div>
+                <div class="input-group mb-3">
+                    <input class="form-control" type="text" placeholder="Okul" name="school" id="school">
+                </div>
+                <div class="input-group mb-3">
+                    <input class="form-control" type="number" placeholder="Okul Numarası" name="schoolNumber" id="schoolNumber">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="student-form-submit-button"><i class="fa-solid fa-floppy-disk"></i> Kaydet</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script>
+        const studentFormModal =  new bootstrap.Modal(document.getElementById("student-form-modal"), {});
+        $(document).ready(function() {
+		    var table =  $('#bilfen').DataTable({
+		      	'processing': true,
+		      	'serverSide': true,
+		      	'serverMethod': 'post',
+		      	'ajax': {
+		          	'url':'http://localhost:8080/students/list'
+		      	},
+		      	'columns': [
+		         	{ data: 'id' },
+		         	{ data: 'trIdentityNumber' },
+		         	{ data: 'name' },
+		         	{ data: 'surname' },
+		         	{ data: 'school' },
+		         	{ data: 'schoolNumber' },
+                    {
+                        data: null,
+                        className: "dt-center editor-edit cursor-hand",
+                        defaultContent: '<i class="fa fa-pencil"/>',
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        className: "dt-center editor-delete cursor-hand",
+                        defaultContent: '<i class="fa fa-trash"/>',
+                        orderable: false
+                    }
+		      	]
+		   });
+
+           $('#bilfen').on('click', 'td.editor-delete', function (e) {
+                const rowData = table.row( this ).data();
+                if (confirm(rowData[2]+" "+rowData[3]+" isimli öğrencinin kaydını silmek istediğinizden eminmisiniz?") == true) {
+                    $.ajax({
+                        url: 'http://localhost:8080/students/'+rowData[0],
+                        type: 'DELETE',
+                        success: function(result) {
+                            alert("Kayıt başarılı şekilde silinmiştir!");
+                            table.row( this ).remove().draw();
+                        }
+                    });
+                }
+            } );
+
+            $('#bilfen').on('click', 'td.editor-edit', function (e) {
+                const rowData = table.row( this ).data();
+                $('#student-form').attr('action', 'http://localhost:8080/students/'+rowData[0]);
+                $("#student-form").attr("method", "PATCH");
+                $("#trIdentityNumber").val(rowData[1]);
+                $("#name").val(rowData[2]);
+                $("#surname").val(rowData[3]);
+                $("#school").val(rowData[4]);
+                $("#schoolNumber").val(rowData[5]);
+                document.getElementById("modal-title").innerHTML="Öğrenci Kaydını Düzenle: "+rowData[2]+" "+rowData[3];
+                studentFormModal.show();
+            } );
+
+            $('#add-new-data').on('click', function (e) {
+                const rowData = table.row( this ).data();
+                $('#student-form').attr('action', 'http://localhost:8080/students');
+                $("#student-form").attr("method", "POST");
+                $("#trIdentityNumber").val(null);
+                $("#name").val(null);
+                $("#surname").val(null);
+                $("#school").val(null);
+                $("#schoolNumber").val(null);
+                document.getElementById("modal-title").innerHTML="Yeni Öğrenci Kaydı Ekle";
+                studentFormModal.show();
+            } );
+
+            $("#student-form-submit-button").on('click',function(e){
+                const form = $('#student-form');
+                const actionUrl = form.attr('action');
+                const type = form.attr('method');
+                $.ajax({
+                    type: type,
+                    url: actionUrl,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        alert("İşleminiz başarlı şekilde gerçekleştirildi");
+                        studentFormModal.hide();
+                        table.draw();
+                    }
+                });
+            });
+            
+		} );
+    </script>
+</body>
+</html>
