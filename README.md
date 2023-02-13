@@ -10,8 +10,7 @@ Gönderilen PDF istinaden yapmış olduğum kod örneği
 Daha sonra aşağıdaki komutları çalıştırarak projeyi başlata bilirsiniz.
 
 ```bash
-cd [my-app-name]
-composer start
+composer i
 ```
 
 ```bash
