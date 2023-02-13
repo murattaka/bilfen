@@ -7,7 +7,12 @@ Gönderilen PDF istinaden yapmış olduğum kod örneği
 
 `app\settings.php` dosyasında veri bağlantı ayarları düzenlenmelidir.
 
-Daha sonra aşağıdaki komutu çalıştırarak projeyi başlata bilirsiniz.
+Daha sonra aşağıdaki komutları çalıştırarak projeyi başlata bilirsiniz.
+
+```bash
+cd [my-app-name]
+composer start
+```
 
 ```bash
  php -S localhost:8080 -t public public/index.php
